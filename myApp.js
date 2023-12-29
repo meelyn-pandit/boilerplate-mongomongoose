@@ -64,40 +64,78 @@ const findPeopleByName = (personName, done) => {
   })
 };
 
+let food = "Dosa"
 const findOneByFood = (food, done) => {
-  done(null /*, data*/);
+  Person.findOne({favoriteFoods: food}, (err, data) => { // food does not need to be in array brackets
+    if (err) return console.error(err)
+    done(null, data);
+  })
 };
 
+let personId = 'Meelyn'
 const findPersonById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findById({_id: personId}, (err, data) => {
+    if (err) return console.error(err)
+    done(null, data);
+  })
 };
 
 const findEditThenSave = (personId, done) => {
   const foodToAdd = "hamburger";
-
-  done(null /*, data*/);
+  Person.findById({_id: personId}, (err, person) => {
+    if (err) return console.error(err)
+    person.favoriteFoods.push(foodToAdd)
+    person.save((err, data) => {
+      if (err) return console.error(err)
+      done(null, data)
+    })
+  })
 };
 
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
-
-  done(null /*, data*/);
+  Person.findOneAndUpdate({name: personName}, {new: true}, (err, person) => {
+    if (err) return console.error(err)
+    person.age = ageToSet
+    person.save((err, data) => {
+      if (err) return console.error(err)
+      done(null, data)
+    })
+  })
+  // done(null /*, data*/);
 };
 
+personId = 'Alex'
 const removeById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findByIdAndRemove({_id: personId}, (err, person) => {
+    if (err) return console.error(err)
+    done(null, person);
+  })
+  // done(null /*, data*/);
 };
 
 const removeManyPeople = (done) => {
   const nameToRemove = "Mary";
-
-  done(null /*, data*/);
+  Person.remove({name: nameToRemove}, (err, person) => {
+    if (err) return console.error(err)
+    done(null, person)
+  })
+  // done(null /*, data*/);
 };
 
 const queryChain = (done) => {
   const foodToSearch = "burrito";
+  let findQuery = Person.find({favoriteFoods: foodToSearch})
+    .sort({name: 1})
+    .limit(2)
+    .select('-age')
 
-  done(null /*, data*/);
+  findQuery.exec((err, person) => {
+    if (err) console.error(err)
+    done(null, person)
+  })
+  
+  // done(null /*, data*/);
 };
 
 /** **Well Done !!**
